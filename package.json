@@ -12,6 +12,7 @@
   "author": "Shivam Taneja",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "express-async-handler": "^1.2.0"
   }
 }

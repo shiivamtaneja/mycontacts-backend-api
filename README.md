@@ -6,6 +6,7 @@
 - Mogoose
 - Nodemon
 - Dotenv
+- Express Async Handler
 
 ## Routes
 
