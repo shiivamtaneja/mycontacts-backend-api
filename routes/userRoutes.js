@@ -5,16 +5,15 @@ const {
   currentUser,
 } = require("../controllers/userController");
 
-const { validator } = require("../middleware/validator");
-
-console.log(validator);
+const { inputValidator } = require("../middleware/inputValidator");
+const { tokenValidator } = require("../middleware/tokenValidator");
 
 const router = express.Router();
 
-router.post("/register", validator('body', ['email', 'username', 'password']), registerUser);
+router.post("/register", inputValidator('body', ['email', 'username', 'password']), registerUser);
 
-router.post("/login", validator('body', ['email', 'password']), loginUser);
+router.post("/login", inputValidator('body', ['email', 'password']), loginUser);
 
-router.get("/current", currentUser);
+router.get("/current", tokenValidator, currentUser);
 
 module.exports = router;

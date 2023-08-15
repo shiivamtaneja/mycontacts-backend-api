@@ -1,6 +1,6 @@
 const { constants } = require("../constants");
 
-const validator = (requestProperty, fields) => {
+const inputValidator = (requestProperty, fields) => {
   return (req, res, next) => {
     const data = req[requestProperty]; // req.body can be written as req['body']
     let errors = [];
@@ -22,8 +22,8 @@ const validator = (requestProperty, fields) => {
     
     next();
   }
-}
+};
 
 module.exports = {
-  validator
+  inputValidator
 };
