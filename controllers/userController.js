@@ -2,22 +2,24 @@ const asyncHandler = require("express-async-handler");
 const bycrypt = require("bcrypt");
 const User = require("../models/userModel");
 
+const { constants } = require("../constants");
+
 //@desc Register a user
 //@route POST /api/users/register
 //@access public
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = async (req, res, next) => {
+
+  const { username, email, password } = req.body;
+
+  const userAvaliable = await User.findOne({ email });
+  if (userAvaliable) {
+    return next({
+      statusCode: constants.FORBIDDEN,
+      message: "User Already Registered!",
+    });
+  }
+
   try {
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-      throw new Error("All fields are mandatory!");
-    }
-
-    const userAvaliable = await User.findOne({ email });
-    if (userAvaliable) {
-      throw new Error("User already registered!");
-    }
-
     // Hash Password 
     const hashedPassword = await bycrypt.hash(password, 10);
 
@@ -27,18 +29,18 @@ const registerUser = asyncHandler(async (req, res) => {
       password: hashedPassword
     });
 
-    if (user) {
-      res.status(201).json({
-        message: `User Registered Sucessfully! with username: ${user.username} and email: ${user.email}`
-      });
-    } else {
-      throw new Error("User Data is not Valid!");
-    }
+    res.status(constants.CREATED).json({
+      message: `User Registered Sucessfully! with username: ${user.username} and email: ${user.email}`
+    });
 
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.log(err);
+    return next({
+      statusCode: constants.SERVER_ERROR,
+      message: "Something went wrong!"
+    })
   }
-});
+};
 
 //@desc Login a user
 //@route POST /api/users/login
