@@ -7,6 +7,7 @@
 - Nodemon
 - Dotenv
 - Express Async Handler
+- Bcrypt
 
 ## Routes
 
