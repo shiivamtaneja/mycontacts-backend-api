@@ -13,11 +13,13 @@ const validator = (requestProperty, fields) => {
     if (errors.length === fields.length) return next({
       statusCode: constants.VALIDATION_ERROR,
       message: { errors, msg: "All fields are required!" },
-    })
+    });
+
     if (errors.length > 0) return next({
       statusCode: constants.VALIDATION_ERROR,
       message: errors,
-    })
+    });
+    
     next();
   }
 }

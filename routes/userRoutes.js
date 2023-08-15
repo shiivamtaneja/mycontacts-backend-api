@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.post("/register", validator('body', ['email', 'username', 'password']), registerUser);
 
-router.post("/login", loginUser);
+router.post("/login", validator('body', ['email', 'password']), loginUser);
 
 router.get("/current", currentUser);
 

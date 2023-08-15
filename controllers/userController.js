@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bycrypt = require("bcrypt");
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 const { constants } = require("../constants");
 
@@ -46,7 +47,29 @@ const registerUser = async (req, res, next) => {
 //@route POST /api/users/login
 //@access public
 const loginUser = asyncHandler(async (req, res) => {
-  res.json({ message: "Login User" });
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  // Compare password with Hashed Password
+  if (user && (await bycrypt.compare(password, user.password))) {
+
+    const accessToken = jwt.sign({
+      user: {
+        username: user.username,
+        email: user.email,
+        id: user.id,
+      }
+    }, process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1m" }
+    );
+    res.status(constants.SUCCESS).json({ accessToken });
+  } else {
+    return next({
+      statusCode: constants.UNAUTHORIZED,
+      message: "Invalid Email or Password!"
+    })
+  }
 });
 
 //@desc Current user
